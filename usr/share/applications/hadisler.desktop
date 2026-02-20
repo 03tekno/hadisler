@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Hadisler
+Comment=Kütüb-i Sitte Hadis Rehberi
+Exec=python3 /opt/hadisler/hadisler.py
+Icon=/opt/hadisler/icon.png
+Terminal=false
+Type=Application
+Categories=Education;Utility;
