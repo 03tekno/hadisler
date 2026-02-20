@@ -46,10 +46,16 @@ class HadisUygulamasi(QMainWindow):
         self.setCentralWidget(central_widget)
         self.main_layout = QVBoxLayout(central_widget)
 
+        # Üst Bar - Elemanları Ortalamak İçin Düzenlendi
         top_bar = QHBoxLayout()
+        
+        # Sol Boşluk (Ortalamayı sağlar)
+        top_bar.addStretch()
+
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText("Hadislerde ara...")
-        self.search_input.setMinimumWidth(150)
+        self.search_input.setMinimumWidth(200)
+        self.search_input.setContentsMargins(0, 0, 0, 0)
         self.search_input.returnPressed.connect(self.search_hadis)
         
         btn_search = QPushButton("🔍 Ara")
@@ -67,15 +73,19 @@ class HadisUygulamasi(QMainWindow):
         self.btn_theme = QPushButton("🌙 Gece")
         self.btn_theme.clicked.connect(self.toggle_theme)
 
-        top_bar.addWidget(QLabel("<b>HADİS PORTAL</b>"))
-        top_bar.addSpacing(20)
+        # Elemanları Sırayla Ekleme
         top_bar.addWidget(self.search_input)
         top_bar.addWidget(btn_search)
-        top_bar.addStretch()
+        top_bar.addSpacing(15)
         top_bar.addWidget(btn_font_minus)
         top_bar.addWidget(btn_font_plus)
+        top_bar.addSpacing(15)
         top_bar.addWidget(self.btn_copy)
         top_bar.addWidget(self.btn_theme)
+        
+        # Sağ Boşluk (Ortalamayı sağlar)
+        top_bar.addStretch()
+
         self.main_layout.addLayout(top_bar)
 
         self.splitter = QSplitter(Qt.Orientation.Horizontal)
@@ -189,7 +199,6 @@ class HadisUygulamasi(QMainWindow):
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
-            # Arapça sütunu (h.arabca) sorgudan çıkarıldı
             query = "SELECT h._id, h.hadis, h.ravi, s.serh FROM hadisler h LEFT JOIN serh s ON h.serh1_id = s._id WHERE "
             if is_search:
                 query += "(h.hadis LIKE ? OR h._id = ?)"
@@ -208,8 +217,8 @@ class HadisUygulamasi(QMainWindow):
             html = ""
             for r in res:
                 h_f, s_f = self.base_font_size, self.base_font_size - 1
-                hadis_m = self.highlight_text(r[1]) # r[1] artık hadis metni
-                serh_m = self.highlight_text(r[3] if r[3] else 'Bu hadis için şerh kaydı bulunamadı.') # r[3] şerh
+                hadis_m = self.highlight_text(r[1])
+                serh_m = self.highlight_text(r[3] if r[3] else 'Bu hadis için şerh kaydı bulunamadı.')
                 
                 html += f"""
                 <div style='margin-bottom: 35px; word-wrap: break-word;'>
