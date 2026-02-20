@@ -189,10 +189,11 @@ class HadisUygulamasi(QMainWindow):
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
-            query = "SELECT h._id, h.arabca, h.hadis, h.ravi, s.serh FROM hadisler h LEFT JOIN serh s ON h.serh1_id = s._id WHERE "
+            # Arapça sütunu (h.arabca) sorgudan çıkarıldı
+            query = "SELECT h._id, h.hadis, h.ravi, s.serh FROM hadisler h LEFT JOIN serh s ON h.serh1_id = s._id WHERE "
             if is_search:
-                query += "(h.hadis LIKE ? OR h.arabca LIKE ? OR h._id = ?)"
-                params = (f'%{term}%', f'%{term}%', term)
+                query += "(h.hadis LIKE ? OR h._id = ?)"
+                params = (f'%{term}%', term)
             else:
                 query += "h.konu = ?"
                 params = (term,)
@@ -201,16 +202,14 @@ class HadisUygulamasi(QMainWindow):
             res = cursor.fetchall()
             
             mint = "#45ad1d" 
-            arap_kirmizi = "#e74c3c"
             t_color = "#333333" if not self.is_dark_mode else "#dddddd"
             sh_bg = "#ffffff" if not self.is_dark_mode else "#424242"
 
             html = ""
             for r in res:
                 h_f, s_f = self.base_font_size, self.base_font_size - 1
-                arap_f = h_f + 10 
-                hadis_m = self.highlight_text(r[2])
-                serh_m = self.highlight_text(r[4] if r[4] else 'Bu hadis için şerh kaydı bulunamadı.')
+                hadis_m = self.highlight_text(r[1]) # r[1] artık hadis metni
+                serh_m = self.highlight_text(r[3] if r[3] else 'Bu hadis için şerh kaydı bulunamadı.') # r[3] şerh
                 
                 html += f"""
                 <div style='margin-bottom: 35px; word-wrap: break-word;'>
@@ -220,11 +219,7 @@ class HadisUygulamasi(QMainWindow):
                     
                     <br>
                     
-                    <div style='direction: rtl; font-size: {arap_f}pt; color: {arap_kirmizi}; font-family: "Amiri", serif; line-height: 1.4;'>
-                        {r[1]}
-                    </div>
-                    
-                    <p style='color: #7f8c8d; font-size: 10pt; margin-top: 8px; margin-bottom: 5px;'><b>Ravi:</b> {r[3]}</p>
+                    <p style='color: #7f8c8d; font-size: 10pt; margin-top: 8px; margin-bottom: 5px;'><b>Ravi:</b> {r[2]}</p>
                     <p style='font-size: {h_f}pt; line-height: 1.5; color: {t_color};'><b>Hadis: {hadis_m}</b></p>
                     
                     <div style='background-color: {sh_bg}; padding: 18px; border-left: 4px solid {mint}; margin-top: 15px; border-radius: 4px; border: 1px solid #d1d8d5;'>
