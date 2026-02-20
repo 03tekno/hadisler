@@ -1,4 +1,4 @@
-# Kütüb-i Sitte Hadis Rehberi 
+# Kütüb-i Sitte Hadisleri
 
 Bu uygulama altı büyük hadis kitabından derlenmiş hadisleri içerir.
 Sahih-i Buhari, Müslim, Ebu Davut, Tirmizi Nesai ve İbni Mace 
