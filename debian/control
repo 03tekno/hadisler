@@ -3,6 +3,7 @@ Maintainer: mobilturka
 Build-Depends: debhelper (>= 8.0.0)
 Standards-Version: 1.0
 Section: utils
+
 Package: hadisler
 Priority: extra  
 Architecture: all
